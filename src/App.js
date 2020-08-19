@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Post from './components/Post';
+import { db } from './firebase';
 
 function App() {
-  const [posts, setPosts] = useState([
-    {
-      username: 'cleverqazi',
-      caption: 'Wow it works!',
-      imageUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png',
-    },
-    {
-      username: 'cleverqazi',
-      caption: 'Wow it works!',
-      imageUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png',
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    db.collection('posts').onSnapshot((snapshot) => {
+      setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })));
+    });
+  }, []);
 
   return (
     <div className='app'>
@@ -28,7 +22,7 @@ function App() {
         />
       </div>
       <h1>Let's build an Instagram Clone with React🚀❗️</h1>
-      {posts.map((post) => (
+      {posts.map(({ post, id }) => (
         <Post
           username={post.username}
           caption={post.caption}
