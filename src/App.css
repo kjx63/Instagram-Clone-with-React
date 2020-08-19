@@ -6,6 +6,16 @@
   background-color: #fafafa;
 }
 
+.app__posts {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.app__postsRight {
+  margin-left: 20px;
+}
+
 .app__header {
   background-color: #fff;
   padding: 20px;

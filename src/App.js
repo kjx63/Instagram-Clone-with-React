@@ -5,6 +5,7 @@ import { db, auth } from './firebase';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Input, Modal } from '@material-ui/core';
 import ImageUpload from './components/ImageUpload';
+import InstagramEmbed from 'react-instagram-embed';
 
 function getModalStyle() {
   const top = 50;
@@ -174,16 +175,32 @@ function App() {
           </div>
         )}
       </div>
-
-      <h1>Let's build an Instagram Clone with React🚀❗️</h1>
-      {posts.map(({ post, id }) => (
-        <Post
-          key={id}
-          username={post.username}
-          caption={post.caption}
-          imageUrl={post.imageUrl}
-        />
-      ))}
+      <div className='app__posts'>
+        <div className='app__postsLeft'>
+          {posts.map(({ post, id }) => (
+            <Post
+              key={id}
+              username={post.username}
+              caption={post.caption}
+              imageUrl={post.imageUrl}
+            />
+          ))}
+        </div>
+        <div className='app__postsRight'>
+          <InstagramEmbed
+            url='https://www.instagram.com/p/CEBTO6yHhJm/?utm_source=ig_web_copy_link'
+            maxWidth={320}
+            hideCaption={false}
+            containerTagName='div'
+            protocol=''
+            injectScript
+            onLoading={() => {}}
+            onSuccess={() => {}}
+            onAfterRender={() => {}}
+            onFailure={() => {}}
+          />
+        </div>
+      </div>
 
       {user?.displayName ? (
         <ImageUpload username={user.displayName} />
