@@ -4,6 +4,7 @@ import Post from './components/Post';
 import { db, auth } from './firebase';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Input, Modal } from '@material-ui/core';
+import ImageUpload from './components/ImageUpload';
 
 function getModalStyle() {
   const top = 50;
@@ -58,9 +59,13 @@ function App() {
   }, [user, username]);
 
   useEffect(() => {
-    db.collection('posts').onSnapshot((snapshot) => {
-      setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })));
-    });
+    db.collection('posts')
+      .orderBy('timestamp', 'desc')
+      .onSnapshot((snapshot) => {
+        setPosts(
+          snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() }))
+        );
+      });
   }, []);
 
   const signUp = (e) => {
@@ -160,15 +165,15 @@ function App() {
           src='https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png'
           alt='https://www.extremetech.com/wp-content/uploads/2019/09/SubForester-764A6822edit.jpg'
         />
+        {user ? (
+          <Button onClick={() => auth.signOut()}>Logout</Button>
+        ) : (
+          <div className='app__loginContainer'>
+            <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+            <Button onClick={() => setOpen(true)}>Sign Up</Button>
+          </div>
+        )}
       </div>
-      {user ? (
-        <Button onClick={() => auth.signOut()}>Logout</Button>
-      ) : (
-        <div className='app__loginContainer'>
-          <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
-          <Button onClick={() => setOpen(true)}>Sign Up</Button>
-        </div>
-      )}
 
       <h1>Let's build an Instagram Clone with React🚀❗️</h1>
       {posts.map(({ post, id }) => (
@@ -179,6 +184,12 @@ function App() {
           imageUrl={post.imageUrl}
         />
       ))}
+
+      {user?.displayName ? (
+        <ImageUpload username={user.displayName} />
+      ) : (
+        <h3>Sorry you need to login to upload</h3>
+      )}
     </div>
   );
 }
